@@ -1,9 +1,12 @@
-import { useDarkMode } from 'usehooks-ts';
+import { useDarkMode, useDocumentTitle } from 'usehooks-ts';
 import NavBar from './components/NavBar';
 import MainBox from './components/MainBox';
+import { useState } from 'react';
 
 const App = () => {
   const { isDarkMode } = useDarkMode();
+  const [title] = useState<string>('MikuNav');
+  useDocumentTitle(title);
   return (
     <main
       className={`w-full h-full ${
