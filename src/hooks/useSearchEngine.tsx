@@ -7,6 +7,7 @@ import {
   BiLogoYahoo,
 } from 'react-icons/bi';
 import { GiDuck } from 'react-icons/gi';
+import { useLocalStorage } from 'usehooks-ts';
 
 export interface searchEngineItem {
   id: number;
@@ -25,7 +26,7 @@ export const searchEngineList: searchEngineItem[] = [
   {
     id: 1,
     name: '百度',
-    url: 'https://www.baidu.com/s?wd=123',
+    url: 'https://www.baidu.com/s?wd=',
     icon: BiLogoBaidu,
   },
   {
@@ -49,11 +50,22 @@ export const searchEngineList: searchEngineItem[] = [
 ];
 
 const useSearchEngine = () => {
-  const [searchEngine, setSearchEngine] = useState<searchEngineItem>(
-    searchEngineList[0]
+  const [searchEngineLocal, setSearchEngineLocal] = useLocalStorage<number>(
+    'searchEngine',
+    0
   );
 
-  return { searchEngine, setSearchEngine };
+  const [searchEngine, setSearchEngine] = useState<searchEngineItem>(
+    searchEngineList[searchEngineLocal]
+  );
+
+  return {
+    searchEngine,
+    setSearchEngine: (searchEngine: searchEngineItem) => {
+      setSearchEngine(searchEngine);
+      setSearchEngineLocal(searchEngine.id);
+    },
+  };
 };
 
 export default useSearchEngine;
