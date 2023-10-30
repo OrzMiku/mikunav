@@ -8,9 +8,14 @@ const SearchBar = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const { searchEngine, setSearchEngine } = useSearchEngine();
   const [isSwitching, setIsSwitching] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
   const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    window.location.href = searchEngine + searchValue;
+    if (searchValue == '') {
+      setError('搜索内容不能为空！');
+      return;
+    }
+    window.location.href = searchEngine.url + searchValue;
   };
   const handleOnClickSwitchBtn = () => {
     setIsSwitching(!isSwitching);
@@ -38,7 +43,7 @@ const SearchBar = () => {
           onValueChange={setSearchValue}
           value={searchValue}
           radius={`none`}
-          placeholder={`Search Here!`}
+          placeholder={error === '' ? `Search Here!` : error}
         />
         <Button type='submit' isIconOnly className='text-xl' radius={`none`}>
           <BiSearchAlt />
