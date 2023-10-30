@@ -1,12 +1,23 @@
 import { Input, Button } from '@nextui-org/react';
 import { FormEvent, useState } from 'react';
 import { BiSearchAlt } from 'react-icons/bi';
+import useSearchEngine, { searchEngineItem } from '../hooks/useSearchEngine';
+import SearchEngineSwitcherPanel from './SearchEngineSwitcherPanel';
 
 const SearchBar = () => {
   const [searchValue, setSearchValue] = useState<string>('');
+  const { searchEngine, setSearchEngine } = useSearchEngine();
+  const [isSwitching, setIsSwitching] = useState<boolean>(false);
   const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    window.location.href = `https://www.google.com/search?q=${searchValue}`;
+    window.location.href = searchEngine + searchValue;
+  };
+  const handleOnClickSwitchBtn = () => {
+    setIsSwitching(!isSwitching);
+  };
+  const handleOnSwitch = (searchEngine: searchEngineItem) => {
+    setSearchEngine(searchEngine);
+    handleOnClickSwitchBtn();
   };
   return (
     <div className='flex flex-col justify-center items-center mt-10 w-10/12 max-w-lg'>
@@ -15,6 +26,14 @@ const SearchBar = () => {
         className='flex w-full overflow-hidden rounded-lg'
         onSubmit={handleOnSubmit}
       >
+        <Button
+          onClick={handleOnClickSwitchBtn}
+          isIconOnly
+          className='text-xl'
+          radius={`none`}
+        >
+          {<searchEngine.icon />}
+        </Button>
         <Input
           onValueChange={setSearchValue}
           value={searchValue}
@@ -25,6 +44,14 @@ const SearchBar = () => {
           <BiSearchAlt />
         </Button>
       </form>
+      {isSwitching && (
+        <div className='w-full mt-4'>
+          <SearchEngineSwitcherPanel
+            searchEngine={searchEngine}
+            setSearchEngine={handleOnSwitch}
+          />
+        </div>
+      )}
     </div>
   );
 };
